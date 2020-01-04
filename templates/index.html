@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+</head>
+<body>
+<form id = "form" name = "form" target="_blank" action="/data" method="POST">
+<p> Select a game scenario 
+<select id = "gameScenario" name = "gameScenario"> Select a game scenario
+ <option value=""></option>
+  <option value="last10_sec3_point_player_dashboard">Last 10 seconds, down by 3 or less</option>
+  <option value="last30_sec3_point_player_dashboard">Last 30 seconds, down by 3 or less</option>
+  <option value="last1_min5_point_player_dashboard">Last 60 seconds, down by 5 or less</option>
+  <option value="last3_min5_point_player_dashboard">Last 3 minutes, down by 5 or less</option>
+  <option value="last5_min5_point_player_dashboard">Last 5 minutes, down by 5 or less</option>
+  <option value="last5_min5_point_player_dashboard">Last 5 minutes, down by 5 or less</option>
+</select>
+</p>
+<p> Select a season
+<select id = "season" name = "season">
+   <option value="2019-20"></option>
+  <option value="2019-20">2019-20</option>
+  <option value="2018-19">2018-19</option>
+  <option value="2017-18">2017-18</option>
+</select> 
+</p>
+<p> Select part of season (optional)
+  <select id = "partOfSeason" name = "partOfSeason">
+    <option value="Regular Season"></option>
+    <option value="Regular Season">Regular season</option>
+    <option value="Playoffs">Playoffs</option>
+  </select>
+</p> 
+  <p> Shot clock (optional)
+  <select id = "shotClock" name = "shotClock">
+    <option value=""></option>
+    <option value="4-0 Very Late">4-0 Very late</option>
+    <option value="7-4 Late">7-4 Late</option>
+    <option value="15-7 Average">15-7 Average</option>
+    <option value="18-15 Early">18-15 Early</option>
+    <option value="22-18 Very Early">22-18 Very early</option>
+    <option value="24-22">24-22 Extremely early</option>
+  </select>
+</p>
+<p> Location (optional)
+  <select id = "location" name = "location">
+    <option value=""></option>
+    <option value="Home">Home</option>
+    <option value="Away">Away</option>
+  </select>
+</p>
+<p> Number of players being compared (max: 5) <input type="text" id = "numPlayers" name = "numPlayers"></p>
+
+<a href="#" id="addPlayer" onclick="addPlayers()">Click to begin typing names of players (case insensitive)</a>
+  <div id="playerContainer" name = "playerContainer"></div>
+  <button type="button">Click to create graph</button>
+</form>
+<canvas id="myChart" width="800" height="600"></canvas>
+<a href="#" id="legend" onclick="legend()">Click here for stat abreviations</a>
+<script type="text/javascript">
+  var myChart;
+  $(function() {
+    $('button').click(function() {
+        $.ajax({
+            url: '/data',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                var bigArray = [[], [], [], [], []]
+
+                for (var i = 0; i < 5; i++) {
+                    if (i < response.data.length) {
+                        bigArray[i] = response.data[i]
+                    }
+                }
+                var labels = response.headers
+                // create chart.js graph
+                if (myChart != undefined) {
+                    myChart.data.labels = labels;
+                    myChart.data.datasets[0].data = bigArray[0];
+                    myChart.data.datasets[0].label = (document.getElementById("player 0").value).toString() + "'s stats";
+                    myChart.data.datasets[1].data = bigArray[1];
+                    myChart.data.datasets[1].label = (document.getElementById("player 1").value).toString() + "'s stats";
+                    myChart.data.datasets[2].data = bigArray[2];
+                    myChart.data.datasets[2].label = (document.getElementById("player 2").value).toString() + "'s stats";
+                    myChart.data.datasets[3].data = bigArray[3];
+                    myChart.data.datasets[3].label = (document.getElementById("player 3").value).toString() + "'s stats";
+                    myChart.data.datasets[4].data = bigArray[4];
+                    myChart.data.datasets[4].label = (document.getElementById("player 4").value).toString() + "'s stats";
+                    myChart.update();
+                  } else {
+                
+                var ctx = document.getElementById("myChart").getContext("2d");
+
+                var options = {
+                  responsive: false,
+                  scales: {
+                      xAxes: [
+                          {
+                              type: "category",
+                              display: true,
+                              scaleLabel: {
+                                  display: true,
+                                  labelString: "Stats",
+                                  fontStyle: "bold",
+                                  fontSize: 13,
+                                  fontColor: 'black'
+                              },
+                              ticks: {
+                                  fontSize: 13,
+                                  fontColor: 'black',
+                                  autoSkip: false
+                              }
+                          }
+                      ],
+                      yAxes: [
+                          {
+                              position: "left",
+                              display: true,
+                              scaleLabel: {
+                                  display: true,
+                                  labelString: "Averages per game (with this scenario)",
+                                  fontStyle: "bold",
+                                  fontSize: 13,
+                                  fontColor: 'black'
+                              },
+                              ticks: {
+                                  fontSize: 13,
+                                  fontColor: 'black'
+                              }
+                          }
+                      ]
+                  },
+                  legend: {
+                      display: false
+                  }
+              };
+
+              myChart = new Chart(ctx, {
+                  type: "line",
+                  data: {
+                      labels: labels,
+                      datasets: [
+                          {
+                              label: (document.getElementById("player 0").value).toString() + "'s stats", // Name the series
+                              data: bigArray[0],
+                              fill: false,
+                              showLine: false,
+                              strokeColor: "rgba(220,220,220,0.8)",
+                              highlightFill: "rgba(220,220,220,0.75)",
+                              highlightStroke: "rgba(220,220,220,1)",
+                              pointRadius: 5,
+                              pointBackgroundColor: 'orange'
+                          },
+                          {
+                              label: (document.getElementById("player 1").value).toString() + "'s stats", // Name the series
+                              data: bigArray[1],
+                              fill: false,
+                              showLine: false,
+                              strokeColor: "rgba(220,220,220,0.8)",
+                              highlightFill: "rgba(220,220,220,0.75)",
+                              highlightStroke: "rgba(220,220,220,1)",
+                              pointRadius: 5,
+                              pointBackgroundColor: 'blue'
+                          },
+                          {
+                              label: (document.getElementById("player 2").value).toString() + "'s stats", // Name the series
+                              data: bigArray[2],
+                              fill: false,
+                              showLine: false,
+                              strokeColor: "rgba(220,220,220,0.8)",
+                              highlightFill: "rgba(220,220,220,0.75)",
+                              highlightStroke: "rgba(220,220,220,1)",
+                              pointRadius: 5,
+                              pointBackgroundColor: 'green'
+                          },
+                          {
+                              label: (document.getElementById("player 3").value).toString() + "'s stats", // Name the series
+                              data: bigArray[3],
+                              fill: false,
+                              showLine: false,
+                              strokeColor: "rgba(220,220,220,0.8)",
+                              highlightFill: "rgba(220,220,220,0.75)",
+                              highlightStroke: "rgba(220,220,220,1)",
+                              pointRadius: 5,
+                              pointBackgroundColor: 'red'
+                          },
+                          {
+                              label: (document.getElementById("player 4").value).toString() + "'s stats", // Name the series
+                              data: bigArray[4],
+                              fill: false,
+                              showLine: false,
+                              strokeColor: "rgba(220,220,220,0.8)",
+                              highlightFill: "rgba(220,220,220,0.75)",
+                              highlightStroke: "rgba(220,220,220,1)",
+                              pointRadius: 5,
+                              pointBackgroundColor: 'purple'
+                          }
+                      ]
+                  },
+
+                  options: options
+
+              });
+                  }
+
+            },
+            error: function(error) {
+                alert("Please modify your parameters and try again!");
+            }
+        });
+    });
+});
+
+  function addPlayers(){
+            var numberPlayers = document.getElementById("numPlayers").value;
+            var playerContainer = document.getElementById("playerContainer");
+            while (playerContainer.hasChildNodes()) {
+                playerContainer.removeChild(playerContainer.lastChild);
+            }
+            for (i=0;i<numberPlayers;i++){
+                if (i == 5) {
+                  break;
+                }
+                playerContainer.appendChild(document.createTextNode("Player " + (i+1)));
+                var input = document.createElement("input");
+                input.type = "text";
+                input.name = "player " + i.toString();
+                input.id = "player " + i.toString();
+                playerContainer.appendChild(input);
+                playerContainer.appendChild(document.createElement("br"));
+            }
+            for (i; i < 5; i++){
+                var emptyPlayer = document.createElement("div");
+                emptyPlayer.name = "player " + i.toString();
+                emptyPlayer.id = "player " + i.toString();
+                emptyPlayer.value = "";
+                document.body.appendChild(emptyPlayer);
+             }
+        }
+        function legend(){
+      alert(`*** per game stats ***  
+            GP = games played  
+            W = # wins  
+            L = # losses  
+            W_PCT = win percentage  
+            FGM = # field goals made  
+            FGA = # field goals attempted 
+            FG_PCT = field goal percentage 
+            FG3M = 3 pointers made  
+            FG3A = 3 pointers attempted 
+            FG3_PCT = 3 point percentage 
+            FTM = free throws made 
+            FTA = free throws attempted 
+            FT_PCT = free throw percentage 
+            OREB = # offensive rebounds 
+            DREB = # defensive rebounds 
+            AST = # rebounds 
+            TOV = # turnovers 
+            STL = # steals 
+            BLK = # blocks
+            PF = # personal fouls 
+            PFD = # personal fouls drawn 
+            PTS = # points scored 
+            PLUS_MINUS = point differential while player is in the game`
+            )
+        }
+</script>
+</body>
+</html>
