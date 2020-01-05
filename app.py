@@ -61,4 +61,4 @@ def data():
       realJSON["headers"] = shortLabelsArray
       return jsonify(realJSON)
 if __name__ == '__main__':
-   app.run(debug = True)
+   app.run()
