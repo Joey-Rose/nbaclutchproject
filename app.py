@@ -63,4 +63,4 @@ def data():
       return jsonify(realJSON)
 if __name__ == '__main__':
    # Bind to PORT if defined, otherwise default to 5000.
-    app.run(threaded = True)
+    app.run(debug = True)

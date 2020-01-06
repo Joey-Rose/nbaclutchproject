@@ -55,12 +55,13 @@
 <a href="#" id="addPlayer" onclick="addPlayers()">Click to begin typing names of players (case insensitive)</a>
   <div id="playerContainer" name = "playerContainer"></div>
   <button type="button">Click to create graph</button>
+  <input type = "submit" value="Submit">
 </form>
 <canvas id="myChart" width="800" height="600"></canvas>
 <a href="#" id="legend" onclick="legend()">Click here for stat abreviations</a>
 <script type="text/javascript">
   var myChart;
-  $(function() {
+ /* $(function() {
     $('button').click(function() {
         $.ajax({
             url: '/data',
@@ -211,7 +212,7 @@
             }
         });
     });
-});
+}); */
 
   function addPlayers(){
             var numberPlayers = document.getElementById("numPlayers").value;
@@ -265,7 +266,7 @@
             PTS = # points scored 
             PLUS_MINUS = point differential while player is in the game`
             )
-        }
+        } 
 </script>
 </body>
 </html>
