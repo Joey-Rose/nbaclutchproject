@@ -3,9 +3,15 @@
 <head>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 <body>
-<form id = "form" name = "form" target="_blank" action="/data" method="POST">
+<button type="button" class="button" onclick="window.location.href = 'http://joeyrose.oxycreates.org/'">Go back to home page</button>
+<a style = "float: right" href="#" id="legend" onclick="legend()">Click here for stat abreviations</a>
+<title>NBA Clutch Project</title>
+<h1 class = "text-center">NBA Clutch Project</h1>
+<h2 class = "text-center" style="font-size: large">Compare the clutchness of NBA players under different circumstances! See <a href = "https://github.com/Joey-Rose/nbaclutchproject">here</a> for more info</h2>
+<form class = "text-center" id = "form" name = "form" target="_blank" action="http://joeyrose.oxycreates.org/nbaclutchproject/data" method="POST">
 <p> Select a game scenario 
 <select id = "gameScenario" name = "gameScenario"> Select a game scenario
  <option value=""></option>
@@ -14,7 +20,7 @@
   <option value="last1_min5_point_player_dashboard">Last 60 seconds, down by 5 or less</option>
   <option value="last3_min5_point_player_dashboard">Last 3 minutes, down by 5 or less</option>
   <option value="last5_min5_point_player_dashboard">Last 5 minutes, down by 5 or less</option>
-  <option value="last5_min5_point_player_dashboard">Last 5 minutes, down by 5 or less</option>
+<option value="last5_min5_point_player_dashboard">Last 5 minutes, down by 5 or less</option>
 </select>
 </p>
 <p> Select a season
@@ -47,7 +53,7 @@
   <select id = "location" name = "location">
     <option value=""></option>
     <option value="Home">Home</option>
-    <option value="Away">Away</option>
+    <option value="Road">Road</option>
   </select>
 </p>
 <p> Number of players being compared (max: 5) <input type="text" id = "numPlayers" name = "numPlayers"></p>
@@ -56,14 +62,15 @@
   <div id="playerContainer" name = "playerContainer"></div>
   <button type="button">Click to create graph</button>
 </form>
-<canvas id="myChart" width="800" height="600"></canvas>
-<a href="#" id="legend" onclick="legend()">Click here for stat abreviations</a>
+<div class = "text-center" id="wait" style="display:none"><img src='https://media.giphy.com/media/sSgvbe1m3n93G/giphy.gif' width="64" height="64" /><br>Loading..</div>
+<canvas  class = "chart-center" id="myChart" width="800" height="600"></canvas>
 <script type="text/javascript">
   var myChart;
   $(function() {
     $('button').click(function() {
+        $("#wait").css("display", "block");
         $.ajax({
-            url: '/data',
+            url: '/nbaclutchproject/data',
             data: $('form').serialize(),
             type: 'POST',
             success: function(response) {
@@ -88,6 +95,8 @@
                     myChart.data.datasets[3].label = (document.getElementById("player 3").value).toString() + "'s stats";
                     myChart.data.datasets[4].data = bigArray[4];
                     myChart.data.datasets[4].label = (document.getElementById("player 4").value).toString() + "'s stats";
+                    
+                    document.getElementById("wait").style.display = "none";
                     myChart.update();
                   } else {
                 
@@ -136,7 +145,7 @@
                       display: false
                   }
               };
-
+              document.getElementById("wait").style.display = "none";
               myChart = new Chart(ctx, {
                   type: "line",
                   data: {
@@ -206,7 +215,8 @@
                   }
 
             },
-            error: function(error) {
+            error: function(xhr) {
+                document.getElementById("wait").style.display = "none";
                 alert("Please modify your parameters and try again!");
             }
         });
