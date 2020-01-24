@@ -11,7 +11,7 @@
 <title>NBA Clutch Project</title>
 <h1 class = "text-center">NBA Clutch Project</h1>
 <h2 class = "text-center" style="font-size: large">Compare the clutchness of NBA players under different circumstances! See <a href = "https://github.com/Joey-Rose/nbaclutchproject/blob/master/README.md">here</a> for more info</h2>
-<form class = "text-center" id = "form" name = "form" target="_blank" action="http://joeyrose.oxycreates.org/nbaclutchproject/data" method="POST">
+<form class = "text-center" id = "form" name = "form" target="_blank" action="/data" method="POST">
 <p> Select a game scenario 
 <select id = "gameScenario" name = "gameScenario"> Select a game scenario
  <option value=""></option>
@@ -20,7 +20,6 @@
   <option value="last1_min5_point_player_dashboard">Last 60 seconds, down by 5 or less</option>
   <option value="last3_min5_point_player_dashboard">Last 3 minutes, down by 5 or less</option>
   <option value="last5_min5_point_player_dashboard">Last 5 minutes, down by 5 or less</option>
-<option value="last5_min5_point_player_dashboard">Last 5 minutes, down by 5 or less</option>
 </select>
 </p>
 <p> Select a season
@@ -70,7 +69,7 @@
     $('button').click(function() {
         $("#wait").css("display", "block");
         $.ajax({
-            url: '/nbaclutchproject/data',
+            url: '/data',
             data: $('form').serialize(),
             type: 'POST',
             success: function(response) {
