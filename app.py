@@ -54,8 +54,6 @@ def data():
             jsonString = stats.last3_min5_point_player_dashboard.get_json()
          elif gameScenario == "last5_min5_point_player_dashboard":
             jsonString = stats.last5_min5_point_player_dashboard.get_json()
-         elif gameScenario == "last5_min5_point_player_dashboard":
-            jsonString = stats.last5_min5_point_player_dashboard.get_json()
          realJSON = json.loads(jsonString)
          longDataArray = realJSON["data"][0]
          shortDataArray = list(itemgetter(*indexArray)(longDataArray)) 
