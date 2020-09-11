@@ -1,12 +1,22 @@
 # NBA Clutch Project
 
-![Website Demo](demos/nba_clutch_demo.gif)
+### Simulate common game scenarios
+
+![Website Generic Demo](demos/nba_clutch_generic_demo.gif)
+
+### Or get specific!
+
+![Website Specific Demo](demos/nba_clutch_specific_demo.gif)
 
 ## Background information:
 
 Website with interactive chart that visualizes NBA players' stats under clutch circumstances. As a result, the clutchness of NBA players may be accurately compared and discussed.
 
 ## FAQ:
+
+### Why isn't this project hosted?
+
+Unfortunately, there's been a long history of stats.nba.com blocking various cloud provider IPs, as shown in [2019](https://github.com/swar/nba_api/issues/106#issuecomment-559877475), [2018](https://towardsdatascience.com/pretending-to-know-about-the-nba-using-python-699177a58685#7083), and [2017](https://github.com/bttmly/nba/issues/41#issuecomment-294624837). I tried hosting it on PythonAnywhere, Heroku, and OxyCreates, but ran into this problem as well. As a result, it seems as though NBA's stats API can only be requested from a local server.
 
 ### Why should I care about this?
 
@@ -15,10 +25,6 @@ Accurately determining the clutchness of an NBA player requires a wealth of data
 ### Is the data accurate?
 
 The data is pulled directly from [stats.nba.com](https://stats.nba.com/), which is updated after every game, using the Python library [nba_api](https://github.com/swar/nba_api) made by user [swar](https://github.com/swar). So, yes!
-
-### Why is it taking so long to load a chart?
-
-There is no publicly accessible API for [stats.nba.com](https://stats.nba.com/), so via [nba_api](https://github.com/swar/nba_api), the endpoints where data is stored in [stats.nba.com](https://stats.nba.com/) are accessed by an http request to [stats.nba.com](https://stats.nba.com/) constructed from the parameters that users choose. Along the way, these requests can be throttled, significantly slowing down the loading process. 
 
 ### How can I tell which parameters to modify if I get an error message?
 
