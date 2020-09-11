@@ -1,5 +1,7 @@
 # NBA Clutch Project
 
+![Website Demo](demos/nba_clutch_demo.gif)
+
 ## Background information:
 
 Website with interactive chart that visualizes NBA players' stats under clutch circumstances. As a result, the clutchness of NBA players may be accurately compared and discussed.
